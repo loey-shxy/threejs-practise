@@ -4,13 +4,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { ref, onMounted, onUnmounted } from 'vue';
 import type { Ref } from 'vue'
-import ResourceTracker from '@/utils/track-resource'
-
-const resMgr: ResourceTracker = new ResourceTracker()
-const track = resMgr.track.bind(resMgr)
 
 let containerDom: Ref = ref(null)
 let scene: THREE.Scene
+let group: THREE.Group
 let camera: THREE.PerspectiveCamera
 let renderer: THREE.WebGLRenderer
 let controls: OrbitControls
@@ -26,10 +23,10 @@ onUnmounted(() => {
 
 const clearScene = () => {
     try {
+        scene.remove(group)
         scene.clear()
         controls.dispose()
         camera.clear()
-        resMgr && resMgr.dispose()
         renderer.dispose()
         renderer.forceContextLoss()
         cancelAnimationFrame(animateId)
@@ -42,6 +39,7 @@ const clearScene = () => {
 
 const init = () => {
     scene = new THREE.Scene()
+    group = new THREE.Group
     camera = new THREE.PerspectiveCamera(
         45,
         window.innerWidth/window.innerHeight,
@@ -59,15 +57,16 @@ const init = () => {
 
     const rgbeLoader: RGBELoader = new RGBELoader()
     rgbeLoader.load('images/house.hdr', texture => {
-        const material: THREE.MeshBasicMaterial = track(new THREE.MeshBasicMaterial({
+        const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({
             map: texture
-        }))
-        const sphereGeometry: THREE.SphereGeometry = track(new THREE.SphereGeometry(10, 32, 32))
-        const sphere: THREE.Mesh = track(new THREE.Mesh(sphereGeometry, material))
+        })
+        const sphereGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(10, 32, 32)
+        const sphere: THREE.Mesh = new THREE.Mesh(sphereGeometry, material)
         sphere.geometry.scale(1, 1, -1)
-        scene.add(sphere)
+        group.add(sphere)
     })
 
+    scene.add(group)
     render()
 }
 
