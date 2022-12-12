@@ -2,9 +2,7 @@
     <div>
         <header>
             <nav>
-                <!-- <RouterLink :to="{name: 'vr-house-viewing'}">VR 看房</RouterLink> -->
                 <RouterLink :to="{name: 'earth'}">地月环绕</RouterLink>
-                <!-- <RouterLink :to="{name: 'city'}">智慧城市</RouterLink> -->
             </nav>
         </header>
 
