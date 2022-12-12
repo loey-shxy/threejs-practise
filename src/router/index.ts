@@ -18,11 +18,6 @@ const router = createRouter({
           path: '/earth',
           name: 'earth',
           component: () => import('@/views/pages/earth/earth.vue')
-        },
-        {
-          path: '/city',
-          name: 'city',
-          component: () => import('@/views/pages/city/city.vue')
         }
       ]
     }
